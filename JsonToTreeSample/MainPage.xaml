@@ -16,7 +16,7 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Grid.Column="0">
-            <TextBox x:Name="JsonTextBox" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="300" IsSpellCheckEnabled="False"/>
+            <TextBox x:Name="JsonTextBox" AcceptsReturn="True" TextWrapping="Wrap" MaxHeight="600" MinHeight="300" IsSpellCheckEnabled="False"/>
             <Button Content="Convert to tree" Click="Button_Click"/>
         </StackPanel>
 

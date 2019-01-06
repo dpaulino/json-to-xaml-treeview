@@ -10,70 +10,56 @@ namespace JsonToTreeSample
 {
     public class JsonHelper
     {
-        public static TreeViewNode JsonToTree(JArray root, string rootName = "Root", string nodeName = "Item")
+        public static TreeViewNode JsonToTree(JArray obj, string nodeName)
         {
-            TreeViewNode parent = new TreeViewNode()
-            {
-                Content = rootName
-            };
+            if (obj == null)
+                return null;
+
+            var parent = new TreeViewNode() { Content = nodeName };
             int index = 0;
 
-            foreach (JToken obj in root)
+            foreach (JToken token in obj)
             {
-                if (obj.Type != JTokenType.Object)
+                if (token.Type == JTokenType.Object)
                 {
-                    parent.Children.Add(new TreeViewNode() { Content = obj.ToString() });
-                    continue;
+                    parent.Children.Add(JsonToTree((JObject)token, $"Item {index++}"));
                 }
-
-                TreeViewNode child = new TreeViewNode()
+                else if (token.Type == JTokenType.Array)
                 {
-                    Content = $"{nodeName} {index++}"
-                };
-
-                foreach (KeyValuePair<string, JToken> token in (JObject)obj)
+                    parent.Children.Add(JsonToTree((JArray)token, $"Item {index++}"));
+                }
+                else
                 {
-                    switch (token.Value.Type)
+                    parent.Children.Add(new TreeViewNode()
                     {
-                        case JTokenType.Array:
-                            child.Children.Add(JsonToTree((JArray)token.Value, token.Key));
-                            break;
-                        case JTokenType.Object:
-                            child.Children.Add(JsonToTree((JObject)token.Value, token.Key));
-                            break;
-                        default:
-                            child.Children.Add(GetChild(token));
-                            break;
-                    }
+                        Content = token.ToString()
+                    });
                 }
-
-                parent.Children.Add(child);
             }
 
             return parent;
         }
 
-        public static TreeViewNode JsonToTree(JObject root, string text = "")
+        public static TreeViewNode JsonToTree(JObject obj, string nodeName)
         {
-            TreeViewNode parent = new TreeViewNode()
-            {
-                Content = text
-            };
+            if (obj == null)
+                return null;
 
-            foreach (KeyValuePair<string, JToken> token in root)
-            {
+            var parent = new TreeViewNode() { Content = nodeName };
 
-                switch (token.Value.Type)
+            foreach(KeyValuePair<string, JToken> token in obj)
+            {
+                if (token.Value.Type == JTokenType.Object)
                 {
-                    case JTokenType.Object:
-                        parent.Children.Add(JsonToTree((JObject)token.Value, token.Key));
-                        break;
-                    case JTokenType.Array:
-                        parent.Children.Add(JsonToTree((JArray)token.Value, token.Key));
-                        break;
-                    default:
-                        parent.Children.Add(GetChild(token));
-                        break;
+                    parent.Children.Add(JsonToTree((JObject)token.Value, token.Key));
+                }
+                else if (token.Value.Type == JTokenType.Array)
+                {
+                    parent.Children.Add(JsonToTree((JArray)token.Value, token.Key));
+                }
+                else
+                {
+                    parent.Children.Add(GetChild(token));
                 }
             }
 
@@ -82,6 +68,9 @@ namespace JsonToTreeSample
 
         private static TreeViewNode GetChild(KeyValuePair<string, JToken> token)
         {
+            if (token.Value == null)
+                return null;
+
             TreeViewNode child = new TreeViewNode()
             {
                 Content = $"{token.Key}: {token.Value.ToString()}"

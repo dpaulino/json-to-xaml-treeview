@@ -42,7 +42,7 @@ namespace JsonToTreeSample
                 if (content.StartsWith("["))
                 {
                     json = JArray.Parse(content);
-                    MainTreeView.RootNodes.Add(JsonHelper.JsonToTree((JArray)json, "Root", "node"));
+                    MainTreeView.RootNodes.Add(JsonHelper.JsonToTree((JArray)json, "Root"));
                 }
                 else
                 {
