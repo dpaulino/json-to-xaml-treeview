@@ -22,11 +22,11 @@ namespace JsonToTreeSample
             {
                 if (token.Type == JTokenType.Object)
                 {
-                    parent.Children.Add(JsonToTree((JObject)token, $"Item {index++}"));
+                    parent.Children.Add(JsonToTree((JObject)token, $"{nodeName}[{index++}]"));
                 }
                 else if (token.Type == JTokenType.Array)
                 {
-                    parent.Children.Add(JsonToTree((JArray)token, $"Item {index++}"));
+                    parent.Children.Add(JsonToTree((JArray)token, $"{nodeName}[{index++}]"));
                 }
                 else
                 {
