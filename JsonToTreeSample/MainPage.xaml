@@ -5,10 +5,21 @@
     xmlns:local="using:JsonToTreeSample"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
+        <StackPanel Grid.Column="0">
+            <TextBox x:Name="JsonTextBox" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="300" IsSpellCheckEnabled="False"/>
+            <Button Content="Convert to tree" Click="Button_Click"/>
+        </StackPanel>
+
+        <controls:TreeView Grid.Column="1" x:Name="MainTreeView"/>
     </Grid>
 </Page>

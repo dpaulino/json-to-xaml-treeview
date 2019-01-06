@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,6 +27,38 @@ namespace JsonToTreeSample
         public MainPage()
         {
             this.InitializeComponent();
+        }
+
+        public void LoadTree(string content)
+        {
+            if (string.IsNullOrWhiteSpace(content))
+                return;
+
+            MainTreeView.RootNodes.Clear();
+
+            JContainer json;
+            try
+            {
+                if (content.StartsWith("["))
+                {
+                    json = JArray.Parse(content);
+                    MainTreeView.RootNodes.Add(JsonHelper.JsonToTree((JArray)json, "Root", "node"));
+                }
+                else
+                {
+                    json = JObject.Parse(content);
+                    MainTreeView.RootNodes.Add(JsonHelper.JsonToTree((JObject)json, "Root"));
+                }
+            }
+            catch (JsonReaderException)
+            {
+                // invalid json
+            }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            LoadTree(JsonTextBox.Text);
         }
     }
 }
