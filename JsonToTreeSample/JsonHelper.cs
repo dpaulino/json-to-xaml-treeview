@@ -27,7 +27,7 @@ namespace JsonToTreeSample
                     }
                     else if (t.Value.Type == JTokenType.Array)
                     {
-                        parent.Children.Add(JsonToTree((JArray)t.Value, t.Key));
+                        parent.Children.Add(JsonToTree((JArray)t.Value, $"{nodeName}[{t.Value.Count()}]"));
                     }
                     else
                     {
