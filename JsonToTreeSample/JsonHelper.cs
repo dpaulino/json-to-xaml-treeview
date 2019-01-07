@@ -10,57 +10,59 @@ namespace JsonToTreeSample
 {
     public class JsonHelper
     {
-        public static TreeViewNode JsonToTree(JArray obj, string nodeName)
+        public static TreeViewNode JsonToTree(JContainer obj, string nodeName)
         {
             if (obj == null)
                 return null;
 
             var parent = new TreeViewNode() { Content = nodeName };
-            int index = 0;
 
-            foreach (JToken token in obj)
+            if (obj.Type == JTokenType.Object)
             {
-                if (token.Type == JTokenType.Object)
+                foreach (KeyValuePair<string, JToken> t in (JObject)obj)
                 {
-                    parent.Children.Add(JsonToTree((JObject)token, $"{nodeName}[{index++}]"));
-                }
-                else if (token.Type == JTokenType.Array)
-                {
-                    parent.Children.Add(JsonToTree((JArray)token, $"{nodeName}[{index++}]"));
-                }
-                else
-                {
-                    parent.Children.Add(new TreeViewNode()
+                    if (t.Value.Type == JTokenType.Object)
                     {
-                        Content = token.ToString()
-                    });
+                        parent.Children.Add(JsonToTree((JObject)t.Value, t.Key));
+                    }
+                    else if (t.Value.Type == JTokenType.Array)
+                    {
+                        parent.Children.Add(JsonToTree((JArray)t.Value, t.Key));
+                    }
+                    else
+                    {
+                        parent.Children.Add(GetChild(t));
+                    }
                 }
             }
-
-            return parent;
-        }
-
-        public static TreeViewNode JsonToTree(JObject obj, string nodeName)
-        {
-            if (obj == null)
-                return null;
-
-            var parent = new TreeViewNode() { Content = nodeName };
-
-            foreach(KeyValuePair<string, JToken> token in obj)
+            else if (obj.Type == JTokenType.Array)
             {
-                if (token.Value.Type == JTokenType.Object)
+                int index = 0;
+                foreach (JToken token in obj)
                 {
-                    parent.Children.Add(JsonToTree((JObject)token.Value, token.Key));
+                    if (token.Type == JTokenType.Object)
+                    {
+                        parent.Children.Add(JsonToTree((JObject)token, $"{nodeName}[{index++}]"));
+                    }
+                    else if (token.Type == JTokenType.Array)
+                    {
+                        parent.Children.Add(JsonToTree((JArray)token, $"{nodeName}[{index++}]"));
+                    }
+                    else
+                    {
+                        parent.Children.Add(new TreeViewNode()
+                        {
+                            Content = token.ToString()
+                        });
+                    }
                 }
-                else if (token.Value.Type == JTokenType.Array)
+            }
+            else
+            {
+                parent.Children.Add(new TreeViewNode()
                 {
-                    parent.Children.Add(JsonToTree((JArray)token.Value, token.Key));
-                }
-                else
-                {
-                    parent.Children.Add(GetChild(token));
-                }
+                    Content = obj.ToString()
+                });
             }
 
             return parent;
