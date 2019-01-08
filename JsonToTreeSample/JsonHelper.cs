@@ -27,7 +27,7 @@ namespace JsonToTreeSample
                     }
                     else if (t.Value.Type == JTokenType.Array)
                     {
-                        parent.Children.Add(JsonToTree((JArray)t.Value, $"{nodeName}[{t.Value.Count()}]"));
+                        parent.Children.Add(JsonToTree((JArray)t.Value, t.Key));
                     }
                     else
                     {
@@ -42,10 +42,7 @@ namespace JsonToTreeSample
                 {
                     if (token.Type == JTokenType.Object)
                     {
-                        if (nodeName.IndexOf(@"[") != -1)
-                            parent.Children.Add(JsonToTree((JObject)token, $"{nodeName.Substring(0, nodeName.IndexOf(@"["))}[{index++}]"));
-                        else
-                            parent.Children.Add(JsonToTree((JObject)token, $"{nodeName}[{index++}]"));
+                        parent.Children.Add(JsonToTree((JObject)token, $"{nodeName}[{index++}]"));
                     }
                     else if (token.Type == JTokenType.Array)
                     {
