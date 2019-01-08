@@ -42,7 +42,10 @@ namespace JsonToTreeSample
                 {
                     if (token.Type == JTokenType.Object)
                     {
-                        parent.Children.Add(JsonToTree((JObject)token, $"{nodeName}[{index++}]"));
+                        if (nodeName.IndexOf(@"[") != -1)
+                            parent.Children.Add(JsonToTree((JObject)token, $"{nodeName.Substring(0, nodeName.IndexOf(@"["))}[{index++}]"));
+                        else
+                            parent.Children.Add(JsonToTree((JObject)token, $"{nodeName}[{index++}]"));
                     }
                     else if (token.Type == JTokenType.Array)
                     {
