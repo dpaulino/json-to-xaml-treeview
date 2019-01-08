@@ -18,8 +18,28 @@
         <StackPanel Grid.Column="0">
             <TextBox x:Name="JsonTextBox" AcceptsReturn="True" TextWrapping="Wrap" MaxHeight="600" MinHeight="300" IsSpellCheckEnabled="False"/>
             <Button Content="Convert to tree" Click="Button_Click"/>
+            <TextBlock x:Name="DetailsBlock" TextWrapping="Wrap" IsTextSelectionEnabled="True"/>
         </StackPanel>
 
-        <controls:TreeView Grid.Column="1" x:Name="MainTreeView"/>
+        <controls:TreeView Grid.Column="1" x:Name="MainTreeView" CanDragItems="False" ItemInvoked="MainTreeView_ItemInvoked">
+            <controls:TreeView.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left">
+                            <TextBlock Text="{Binding Content.Key}"/>
+                            <TextBlock Text=":"/>
+                            <TextBlock Text="{Binding Content.Value}" Margin="12,0,0,0" Opacity="0.5" TextWrapping="Wrap"/>
+                        </StackPanel>
+
+                        <Rectangle Grid.Row="1" Fill="White" Height="1" Opacity="0.3" Margin="0,4,0,0" Width="1000" HorizontalAlignment="Left"/>
+                    </Grid>
+                </DataTemplate>
+            </controls:TreeView.ItemTemplate>
+        </controls:TreeView>
     </Grid>
 </Page>

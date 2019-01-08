@@ -15,7 +15,8 @@ namespace JsonToTreeSample
             if (obj == null)
                 return null;
 
-            var parent = new TreeViewNode() { Content = nodeName };
+            string itemCountString = obj.Count.ToString() + " item" + (obj.Count > 1 ? "s" : "");
+            var parent = new TreeViewNode() { Content = new KeyValuePair<string, string>(nodeName, itemCountString) };
             int index = 0;
 
             foreach (JToken token in obj)
@@ -32,7 +33,7 @@ namespace JsonToTreeSample
                 {
                     parent.Children.Add(new TreeViewNode()
                     {
-                        Content = token.ToString()
+                        Content = new KeyValuePair<string, JToken>($"{nodeName}[{index++}]", token)
                     });
                 }
             }
@@ -45,35 +46,35 @@ namespace JsonToTreeSample
             if (obj == null)
                 return null;
 
-            var parent = new TreeViewNode() { Content = nodeName };
+            var parent = new TreeViewNode() { Content = new KeyValuePair<string, string>(nodeName, obj.Count.ToString() + " items") };
 
-            foreach(KeyValuePair<string, JToken> token in obj)
+            foreach(KeyValuePair<string, JToken> pair in obj)
             {
-                if (token.Value.Type == JTokenType.Object)
+                if (pair.Value.Type == JTokenType.Object)
                 {
-                    parent.Children.Add(JsonToTree((JObject)token.Value, token.Key));
+                    parent.Children.Add(JsonToTree((JObject)pair.Value, pair.Key));
                 }
-                else if (token.Value.Type == JTokenType.Array)
+                else if (pair.Value.Type == JTokenType.Array)
                 {
-                    parent.Children.Add(JsonToTree((JArray)token.Value, token.Key));
+                    parent.Children.Add(JsonToTree((JArray)pair.Value, pair.Key));
                 }
                 else
                 {
-                    parent.Children.Add(GetChild(token));
+                    parent.Children.Add(GetChild(pair));
                 }
             }
 
             return parent;
         }
 
-        private static TreeViewNode GetChild(KeyValuePair<string, JToken> token)
+        private static TreeViewNode GetChild(KeyValuePair<string, JToken> pair)
         {
-            if (token.Value == null)
+            if (pair.Value == null)
                 return null;
 
             TreeViewNode child = new TreeViewNode()
             {
-                Content = $"{token.Key}: {token.Value.ToString()}"
+                Content = pair
             };
 
             return child;

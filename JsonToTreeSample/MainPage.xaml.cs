@@ -60,5 +60,19 @@ namespace JsonToTreeSample
         {
             LoadTree(JsonTextBox.Text);
         }
+
+        private void MainTreeView_ItemInvoked(Microsoft.UI.Xaml.Controls.TreeView sender, Microsoft.UI.Xaml.Controls.TreeViewItemInvokedEventArgs args)
+        {
+            var content = ((Microsoft.UI.Xaml.Controls.TreeViewNode)args.InvokedItem).Content;
+
+            if (content is KeyValuePair<string, string> c)
+            {
+                DetailsBlock.Text = c.Value;
+            }
+            else if (content is KeyValuePair<string, JToken> j)
+            {
+                DetailsBlock.Text = j.Value.ToString();
+            }
+        }
     }
 }
